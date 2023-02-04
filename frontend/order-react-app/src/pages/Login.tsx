@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useState} from 'react';
+import React, {useState, SyntheticEvent} from 'react';
 import { Navigate } from 'react-router-dom';
 
 
@@ -8,16 +8,29 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
 
+    function getCookie(name: string): string {
+        const nameLenPlus = (name.length + 1);
+        // @ts-ignore
+        return document.cookie.split(';').map(c => c.trim()).filter(cookie => {
+            return cookie.substring(0, nameLenPlus) === `${name}=`;
+        }).map(cookie => {
+            return decodeURIComponent(cookie.substring(nameLenPlus));
+        })[0] || null;
+    }
+
+    const csrftoken = getCookie('csrftoken');
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await fetch('http://127.0.0.1:8000/api/authorization/login', {
-            method: 'POST',
-            headers: {
+        await fetch('http://127.0.0.1:8000/api/login', {
+            method: "POST",
+            mode: 'cors',
+            headers: new Headers({
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true
-            },
+                'X-CSRFToken': csrftoken,
+            }),
             credentials: 'include',
             body: JSON.stringify({
                 email,

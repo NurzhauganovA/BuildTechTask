@@ -2,15 +2,13 @@ import React, {useEffect} from 'react';
 
 const Home = () => {
 
-    const url = 'http://127.0.0.1:8000/api/authorization/user'
-
     useEffect(() => {
         (
             async () => {
-                await fetch(url, {
-                    method: 'GET',
+                await fetch('http://127.0.0.1:8000/api/user', {
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                 });
             }
